@@ -17,6 +17,11 @@ const MapCanvas = ({ width, height }: IMapCanvas) => {
     const context = canvas.node()?.getContext("2d");
     if (!context) return;
 
+    const scale = window.devicePixelRatio;
+    canvasRef.current.width = Math.floor(width * scale);
+    canvasRef.current.height = Math.floor(height * scale);
+    context.scale(scale, scale);
+
     const projection = d3.geoMercator().translate([0, 0]).scale(100);
 
     const path = d3.geoPath().projection(projection).context(context);
@@ -33,11 +38,16 @@ const MapCanvas = ({ width, height }: IMapCanvas) => {
 
       context.fillStyle = "crimson";
       clusterData.forEach((cluster) => {
-        const [x, y] = projection(cluster.geometry.coordinates);
+        const points = projection(
+          cluster.geometry.coordinates as [number, number]
+        );
+        if (!points) return;
+        const [x, y] = points;
         if (x && y) {
           context?.beginPath();
-          context.arc(x, y, 5 / scale, 0, 2 * Math.PI);
+          context.arc(x, y, 7 / scale, 0, 2 * Math.PI);
           context.fill();
+          context.lineWidth = 2 / scale;
           context.strokeStyle = "black"; // Stroke color
           context.stroke();
         }
@@ -66,7 +76,17 @@ const MapCanvas = ({ width, height }: IMapCanvas) => {
   }, []);
 
   return (
-    <canvas id="bubble-map" width={width} height={height} ref={canvasRef} />
+    <canvas
+      id="bubble-map"
+      width={width}
+      height={height}
+      style={{
+        // objectFit: "contain",
+        width: `${width}px`,
+        height: `${height}px`,
+      }}
+      ref={canvasRef}
+    />
   );
 };
 
