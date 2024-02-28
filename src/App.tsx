@@ -4,6 +4,8 @@ import "./App.css";
 import { MapContext } from "./store/MapContext";
 import PerformanceMap from "./components/PerformanceMap";
 import CanvasMap from "./components/CanvasMap";
+import BubbleMap from "./components/BubbleMap";
+import BubbleMapCanvas from "./components/BubbleMapCanvas";
 
 export interface IMapState {
   projection: d3.GeoProjection;
@@ -29,12 +31,20 @@ function App() {
 
   return (
     <MapContext.Provider value={{ ...mapState, setMapState }}>
+      <h3>SVG Map</h3>
       <div style={{ width, height }} className="map-wrapper">
         <PerformanceMap width={width} height={height} />
       </div>
+      <h3>Canvas Map</h3>
       <div style={{ width, height }} className="map-wrapper">
         <CanvasMap width={width} height={height} />
       </div>
+      {/* <div style={{ width, height }} className="map-wrapper">
+        <BubbleMap width={width} height={height} />
+      </div> */}
+      {/* <div style={{ width, height }} className="map-wrapper">
+        <BubbleMapCanvas width={width} height={height} />
+      </div> */}
     </MapContext.Provider>
   );
 }

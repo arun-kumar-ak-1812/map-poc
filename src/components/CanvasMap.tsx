@@ -2,11 +2,18 @@ import { useRef, useEffect } from "react";
 import * as d3 from "d3";
 import geoData from "../assets/world-geo.json";
 import { clusterData } from "../assets/CluserData";
+import { TwoMClusterData } from "../assets/TwoMClusterData";
 
 interface IMapCanvas {
   width: number;
   height: number;
 }
+
+// function calculateZoomLevel(zoomScale: number) {
+//   const scale = zoomScale * 2 * Math.PI;
+//   const zoomLevel = Math.log(scale / 256) / Math.LN2;
+//   return zoomLevel;
+// }
 
 const MapCanvas = ({ width, height }: IMapCanvas) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -17,7 +24,7 @@ const MapCanvas = ({ width, height }: IMapCanvas) => {
     const context = canvas.node()?.getContext("2d");
     if (!context) return;
 
-    const scale = window.devicePixelRatio;
+    const scale = window.devicePixelRatio ?? 1;
     canvasRef.current.width = Math.floor(width * scale);
     canvasRef.current.height = Math.floor(height * scale);
     context.scale(scale, scale);
@@ -37,7 +44,8 @@ const MapCanvas = ({ width, height }: IMapCanvas) => {
       context.stroke();
 
       context.fillStyle = "crimson";
-      clusterData.forEach((cluster) => {
+      TwoMClusterData.forEach((cluster, index) => {
+        if(index > 10000) return;
         const points = projection(
           cluster.geometry.coordinates as [number, number]
         );
@@ -49,6 +57,7 @@ const MapCanvas = ({ width, height }: IMapCanvas) => {
           context.fill();
           context.lineWidth = 2 / scale;
           context.strokeStyle = "black"; // Stroke color
+          context.lineWidth = 2 / scale;
           context.stroke();
         }
       });
@@ -59,6 +68,7 @@ const MapCanvas = ({ width, height }: IMapCanvas) => {
       context.save();
       context.translate(transform.x, transform.y);
       context.scale(transform.k, transform.k);
+      // console.log(calculateZoomLevel(100 * transform.k))
       draw(transform.k);
       context.restore();
     };

@@ -1,13 +1,14 @@
 import { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import * as d3Tile from "d3-tile";
+// import * as d3Tile from "d3-tile";
 import geoData from "../assets/world-geo.json";
 import { clusterData } from "../assets/CluserData";
+import { TwoMClusterData } from "../assets/TwoMClusterData";
 
-const url = (x: number, y: number, z: number) =>
-  `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
+// const url = (x: number, y: number, z: number) =>
+//   `https://tile.openstreetmap.org/${z}/${x}/${y}.png`;
 
-const TAU = 2 * Math.PI;
+// const TAU = 2 * Math.PI;
 
 export interface IVectorMap {
   width: number;
@@ -24,16 +25,16 @@ const PerformanceMap = (props: IVectorMap) => {
 
     const projection = d3.geoMercator().translate([0, 0]).scale(100);
 
-    const tile = d3Tile
-      .tile()
-      .extent([
-        [0, 0],
-        [width, height],
-      ])
-      .tileSize(256)
-      .clampX(false);
+    // const tile = d3Tile
+    //   .tile()
+    //   .extent([
+    //     [0, 0],
+    //     [width, height],
+    //   ])
+    //   .tileSize(256)
+    //   .clampX(false);
 
-    const tileLayer = svg.append("g");
+    // const tileLayer = svg.append("g");
 
     const zoomLayer = svg.append("g");
 
@@ -51,9 +52,10 @@ const PerformanceMap = (props: IVectorMap) => {
       .attr("d", path)
       .style("stroke", "#000")
       .style("fill", "lightblue")
-      .style("opacity", 0.5);
+    //   .style("opacity", 0.5);
 
-    clusterData.forEach((cluster) => {
+    TwoMClusterData.forEach((cluster, index) => {
+      if(index > 10000) return;
       const points = projection(cluster.geometry.coordinates);
       pointLayer
         .append("circle")
@@ -64,17 +66,17 @@ const PerformanceMap = (props: IVectorMap) => {
         .style("stroke", "#333");
     });
 
-    const updateTile = (tiles) => {
-      tileLayer
-        .selectAll("image")
-        .data(tiles, (d) => d)
-        .join("image")
-        .attr("xlink:href", (d) => url(...d3Tile.tileWrap(d)))
-        .attr("x", ([x]) => (x + tiles.translate[0]) * tiles.scale)
-        .attr("y", ([, y]) => (y + tiles.translate[1]) * tiles.scale)
-        .attr("width", tiles.scale)
-        .attr("height", tiles.scale);
-    };
+    // const updateTile = (tiles) => {
+    //   tileLayer
+    //     .selectAll("image")
+    //     .data(tiles, (d) => d)
+    //     .join("image")
+    //     .attr("xlink:href", (d) => url(...d3Tile.tileWrap(d)))
+    //     .attr("x", ([x]) => (x + tiles.translate[0]) * tiles.scale)
+    //     .attr("y", ([, y]) => (y + tiles.translate[1]) * tiles.scale)
+    //     .attr("width", tiles.scale)
+    //     .attr("height", tiles.scale);
+    // };
 
     const zoom = d3
       .zoom()
@@ -94,10 +96,10 @@ const PerformanceMap = (props: IVectorMap) => {
         .selectAll("circle")
         .attr("r", 7 / transform.k)
         .attr("stroke-width", 2 / transform.k);
-      const tiles = tile
-        .scale(100 * transform.k * TAU)
-        .translate([transform.x, transform.y])();
-      updateTile(tiles);
+    //   const tiles = tile
+    //     .scale(100 * transform.k * TAU)
+    //     .translate([transform.x, transform.y])();
+    //   updateTile(tiles);
     }
 
     // tile.translate([width / 2, height / 2]).scale(projection.scale() * TAU);
