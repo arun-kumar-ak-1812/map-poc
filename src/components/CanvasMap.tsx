@@ -66,11 +66,20 @@ const MapCanvas = ({ width, height }: IMapCanvas) => {
 
       context.beginPath();
       const { pointCacheArr } = mapCache;
+      let incrementUpdate = 0;
       pointCacheArr.forEach((points) => {
         const { x, y } = points;
         if (x && y) {
           context.moveTo(x + radius, y);
           context.arc(x, y, radius, 0, 2 * Math.PI);
+          incrementUpdate++;
+          if (incrementUpdate > 50000) {
+            context.globalAlpha = 1;
+            context.stroke();
+            // context.globalAlpha = 0.7;
+            context.fill();
+            incrementUpdate = 0;
+          }
         }
       });
       context.globalAlpha = 1;
