@@ -94,7 +94,7 @@ const NewMapCanvas = ({ width, height }: IMapCanvas) => {
 
       arr = [];
       threeLakhData.forEach((cluster, index) => {
-        if (index > 50000) return;
+        if (index > 60000) return;
         const points = projection([
           cluster.residence_lng,
           cluster.residence_lat,

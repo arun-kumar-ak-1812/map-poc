@@ -38,7 +38,7 @@ function App() {
       </div> */}
       <h3>Canvas Map</h3>
       <div style={{ width, height }} className="map-wrapper">
-        <NewMapCanvas width={width} height={height} />
+        <CanvasMap width={width} height={height} />
       </div>
       {/* <div style={{ width, height }} className="map-wrapper">
         <BubbleMap width={width} height={height} />
